@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "mlopscourse"
+version = "0.1.0"
+description = "A training repository to hone skills"
+authors = ["Svyatoslav <pchelintsev.sv@phystech.edu>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/TopCoder2K/MLOpsCourse"
+
+[tool.poetry.dependencies]
+python = ">= 3.9, < 3.13"
+numpy = "^1.26.0"
+scikit-learn = "^1.3.1"
+catboost = "^1.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
