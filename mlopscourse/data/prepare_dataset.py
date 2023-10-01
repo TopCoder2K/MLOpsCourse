@@ -1,15 +1,13 @@
-from typing import Tuple, List
+from typing import List, Tuple
 
-from sklearn.datasets import fetch_openml
 import pandas as pd
+from sklearn.datasets import fetch_openml
 
 
-def prepare_dataset() -> Tuple[
-    pd.DataFrame, pd.Series, pd.DataFrame, pd.Series, List[str], List[str]
-]:
-    bikes = fetch_openml(
-        "Bike_Sharing_Demand", version=2, as_frame=True, parser="pandas"
-    )
+def prepare_dataset() -> (
+    Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series, List[str], List[str]]
+):
+    bikes = fetch_openml("Bike_Sharing_Demand", version=2, as_frame=True, parser="pandas")
     # Make an explicit copy to avoid "SettingWithCopyWarning" from pandas
     X, y = bikes.data.copy(), bikes.target
 
@@ -30,10 +28,6 @@ def prepare_dataset() -> Tuple[
         "humidity",
         "windspeed",
     ]
-    categorical_features = \
-        X_train.columns.drop(numerical_features).values.tolist()
+    categorical_features = X_train.columns.drop(numerical_features).values.tolist()
 
-    return (
-        X_train, y_train, X_test, y_test,
-        numerical_features, categorical_features
-    )
+    return (X_train, y_train, X_test, y_test, numerical_features, categorical_features)
