@@ -2,7 +2,7 @@
 
 ## Setup
 
-To setup all the dependencies, run the following:
+To setup the all necessary dependencies, run the following:
 
 ```
 poetry install --without dev
