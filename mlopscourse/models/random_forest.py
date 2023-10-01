@@ -1,23 +1,22 @@
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
+import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import make_pipeline
+import pickle
 
 from .base import BaseModel
 
 
 class RandomForest(BaseModel):
-    """
-    A basic Random Forest model from sklearn.
-    """
+    """A basic Random Forest model from sklearn."""
     def __init__(
-        self, numerical_features, categorical_features,
-        hyperparams: Optional[dict] = None
+        self, numerical_features: List[str], categorical_features: List[str]
     ) -> None:
-        super().__init__(hyperparams)
+        super().__init__()
 
         self.preprocessor = ColumnTransformer(
             transformers=[
@@ -28,19 +27,27 @@ class RandomForest(BaseModel):
             verbose_feature_names_out=False,
         ).set_output(transform='pandas')
         self.model = make_pipeline(
-            self.preprocessor,
-            RandomForestRegressor(
-                random_state=0
-            ),
+            self.preprocessor, RandomForestRegressor(random_state=0)
         )
 
-    # TODO: types
-    def train(self, X_train, y_train) -> None:
+    def train(
+        self, X_train: pd.DataFrame, y_train: pd.Series,
+        X_test: Optional[pd.DataFrame] = None,
+        y_test: Optional[pd.Series] = None
+    ) -> None:
         self.model.fit(X_train, y_train)
+        if X_test is not None:
+            assert y_test is not None, \
+                'For the evaluation, y_test must be provided!'
+            self.eval(X_test, y_test)
 
-    def eval(self, X_test, y_test) -> None:
+    def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         print(f"Test R2 score: {self.model.score(X_test, y_test):.2f}")
 
-    # TODO:
-    def __call__(self, X_sample):
+    # TODO
+    def __call__(self, X_sample: pd.DataFrame) -> pd.Series:
         pass
+
+    def save_checkpoint(self, path: str) -> None:
+        with open(path + 'model_rf.p', 'wb') as f:
+            pickle.dump(self.model, f)

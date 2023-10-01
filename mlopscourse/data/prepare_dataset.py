@@ -1,7 +1,12 @@
+from typing import Tuple, List
+
 from sklearn.datasets import fetch_openml
+import pandas as pd
 
 
-def prepare_dataset() -> tuple:
+def prepare_dataset() -> Tuple[
+    pd.DataFrame, pd.Series, pd.DataFrame, pd.Series, List[str], List[str]
+]:
     bikes = fetch_openml(
         "Bike_Sharing_Demand", version=2, as_frame=True, parser="pandas"
     )
@@ -25,7 +30,8 @@ def prepare_dataset() -> tuple:
         "humidity",
         "windspeed",
     ]
-    categorical_features = X_train.columns.drop(numerical_features)
+    categorical_features = \
+        X_train.columns.drop(numerical_features).values.tolist()
 
     return (
         X_train, y_train, X_test, y_test,
