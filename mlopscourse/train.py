@@ -1,8 +1,8 @@
 import argparse
 import os
 
-from mlopscourse.data.prepare_dataset import prepare_dataset
-from mlopscourse.models.models_zoo import prepare_model
+from data.prepare_dataset import prepare_dataset
+from models.models_zoo import prepare_model
 
 
 def parse_args() -> argparse.Namespace:
@@ -20,12 +20,12 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def main(args: argparse.Namespace):
+def train(args: argparse.Namespace):
     (
         X_train,
         y_train,
-        X_test,
-        y_test,
+        _,
+        _,
         numerical_features,
         categorical_features,
     ) = prepare_dataset()
@@ -37,10 +37,7 @@ def main(args: argparse.Namespace):
     os.makedirs("checkpoints", exist_ok=True)
     model.save_checkpoint("checkpoints/")
 
-    print(f"Finished!\nEvaluating the {args.model} model...")
-    model.eval(X_test, y_test)
-
 
 if __name__ == "__main__":
     arguments = parse_args()
-    main(arguments)
+    train(arguments)

@@ -19,7 +19,7 @@ class BaseModel:
     ) -> None:
         raise NotImplementedError()
 
-    def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
+    def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> pd.Series:
         raise NotImplementedError()
 
     def __call__(self, X_sample: pd.DataFrame) -> pd.Series:

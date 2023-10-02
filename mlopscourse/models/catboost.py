@@ -1,6 +1,7 @@
 import pickle
 from typing import List, Optional
 
+import numpy as np
 import pandas as pd
 from catboost import CatBoostRegressor, Pool
 from sklearn.metrics import r2_score
@@ -57,7 +58,7 @@ class CatboostModel(BaseModel):
         else:
             self.model.fit(train_data)
 
-    def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
+    def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> pd.Series:
         test_data = Pool(
             data=X_test,
             label=y_test,
@@ -66,11 +67,17 @@ class CatboostModel(BaseModel):
         )
         preds = self.model.predict(test_data)
         print("CatBoost R2: {:.2f}".format(r2_score(y_test, preds)))
+        return pd.Series(preds, name="cb_preds")
 
-    # TODO
-    def __call__(self, X_sample: pd.DataFrame) -> pd.Series:
-        pass
+    def __call__(self, X_sample: pd.DataFrame) -> np.ndarray:
+        sample_data = Pool(
+            data=X_sample,
+            label=None,
+            cat_features=self.categorical_features,
+            feature_names=list(X_sample.columns),
+        )
+        return self.model.predict(sample_data)
 
     def save_checkpoint(self, path: str) -> None:
         with open(path + "model_cb.p", "wb") as f:
-            pickle.dump(self.model, f)
+            pickle.dump(self, f)

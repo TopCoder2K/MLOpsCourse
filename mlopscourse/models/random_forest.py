@@ -43,13 +43,13 @@ class RandomForest(BaseModel):
             assert y_test is not None, "For the evaluation, y_test must be provided!"
             self.eval(X_test, y_test)
 
-    def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
+    def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> pd.Series:
         print(f"Test R2 score: {self.model.score(X_test, y_test):.2f}")
+        return pd.Series(self.model.predict(X_test), name="rf_preds")
 
-    # TODO
-    def __call__(self, X_sample: pd.DataFrame) -> pd.Series:
-        pass
+    def __call__(self, X_sample: pd.DataFrame) -> np.ndarray:
+        return self.model.predict(X_sample)
 
     def save_checkpoint(self, path: str) -> None:
         with open(path + "model_rf.p", "wb") as f:
-            pickle.dump(self.model, f)
+            pickle.dump(self, f)
