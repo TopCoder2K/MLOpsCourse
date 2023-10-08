@@ -1,4 +1,3 @@
-import argparse
 from typing import List
 
 from .base import BaseModel
@@ -7,13 +6,13 @@ from .random_forest import RandomForest
 
 
 def prepare_model(
-    args: argparse.Namespace,
+    model_type: str,
     numerical_features: List[str],
     categorical_features: List[str],
 ) -> BaseModel:
-    if args.model == "rf":
+    if model_type == "rf":
         return RandomForest(numerical_features, categorical_features)
-    elif args.model == "cb":
+    elif model_type == "cb":
         return CatboostModel(numerical_features, categorical_features)
     else:
-        raise AssertionError(f"Unknown model name: {args.model}")
+        raise AssertionError(f"Unknown model name: {model_type}")

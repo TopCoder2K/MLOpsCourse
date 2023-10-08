@@ -1,6 +1,6 @@
 # MLOpsCourse
 
-## Task
+## Task Description
 
 The "Bike Rentals" dataset is used for scripts in this repository. This dataset contains
 daily counts of rented bicycles from the bicycle rental company
@@ -40,28 +40,23 @@ If you want to use `pre-commit`, install all the dependencies:
 poetry install
 ```
 
-## Run experiments
+## Running experiments
 
-To train and evaluate the chosen model, run:
+### Training
 
-```
-poetry run python3 main.py --model [chosen_model]
-```
-
-Note that the `--model` argument is optional. By default, the scripts use Random Forest.
-
-If you only want to train the chosen model and save it afterwards, run:
+If you want to train the chosen model and save it afterwards, run:
 
 ```
-poetry run python3 mlopscourse/train.py --model [chosen_model]
+poetry run python3 mlopscourse/train.py --model_type [chosen_model]
 ```
 
-If you only want to infer a previously trained model, make sure you've placed the
-checkpoint in `checkpoints/` and then run
+The available models are Random Forest (from the scikit-learn library) and CatBoost.
+
+### Evaluation
+
+If you want to infer a previously trained model, make sure you've placed the checkpoint in
+`checkpoints/` and then run
 
 ```
-poetry run python3 mlopscourse/infer.py --model [chosen_model] --ckpt [checkpoint_name]
+poetry run python3 mlopscourse/infer.py --model_type [chosen_model] --ckpt [checkpoint_filename_with_extension]
 ```
-
-The `--ckpt` argument is also optional. The script uses `model_[model_name_from_args].p`
-as the default filename. _But if you set `--model`, do not forget to set `--ckpt` also!_
