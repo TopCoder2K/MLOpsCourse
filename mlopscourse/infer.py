@@ -3,7 +3,7 @@ import pickle
 
 import fire
 
-from data.prepare_dataset import prepare_dataset
+from .data.prepare_dataset import prepare_dataset
 
 
 def infer(model_type: str, ckpt: str) -> None:

@@ -47,7 +47,7 @@ poetry install
 If you want to train the chosen model and save it afterwards, run:
 
 ```
-poetry run python3 mlopscourse/train.py --model_type [chosen_model]
+poetry run python3 commands.py train --model_type [chosen_model]
 ```
 
 The available models are Random Forest (from the scikit-learn library) and CatBoost.
@@ -58,5 +58,5 @@ If you want to infer a previously trained model, make sure you've placed the che
 `checkpoints/` and then run
 
 ```
-poetry run python3 mlopscourse/infer.py --model_type [chosen_model] --ckpt [checkpoint_filename_with_extension]
+poetry run python3 commands.py infer --model_type [chosen_model] --ckpt [checkpoint_filename_with_extension]
 ```

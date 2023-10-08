@@ -2,8 +2,8 @@ import os
 
 import fire
 
-from data.prepare_dataset import prepare_dataset
-from models.models_zoo import prepare_model
+from .data.prepare_dataset import prepare_dataset
+from .models.models_zoo import prepare_model
 
 
 def train(model_type: str) -> None:
@@ -23,7 +23,7 @@ def train(model_type: str) -> None:
         _,
         numerical_features,
         categorical_features,
-    ) = prepare_dataset()
+    ) = prepare_dataset(print_info=True)
     model = prepare_model(model_type, numerical_features, categorical_features)
 
     print(f"Training the {model_type} model...")
