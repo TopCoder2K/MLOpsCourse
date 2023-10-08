@@ -2,7 +2,7 @@ import argparse
 import os
 import pickle
 
-from mlopscourse.data.prepare_dataset import prepare_dataset
+from data.prepare_dataset import prepare_dataset
 
 
 def parse_args() -> argparse.Namespace:

@@ -1,5 +1,31 @@
 # MLOpsCourse
 
+## Task
+
+The "Bike Rentals" dataset is used for scripts in this repository. This dataset contains
+daily counts of rented bicycles from the bicycle rental company
+[Capital-Bikeshare](https://capitalbikeshare.com/) in Washington D.C., along with weather
+and seasonal information. The goal is to predict how many bikes will be rented depending
+on the weather and the day. The dataset info is
+
+```
+Index: 8645 entries, 0 to 8644
+Data columns (total 11 columns):
+ #   Column      Non-Null Count  Dtype
+---  ------      --------------  -----
+ 0   season      8645 non-null   category
+ 1   month       8645 non-null   int64
+ 2   hour        8645 non-null   int64
+ 3   holiday     8645 non-null   category
+ 4   weekday     8645 non-null   int64
+ 5   workingday  8645 non-null   category
+ 6   weather     8645 non-null   category
+ 7   temp        8645 non-null   float64
+ 8   feel_temp   8645 non-null   float64
+ 9   humidity    8645 non-null   float64
+ 10  windspeed   8645 non-null   float64
+```
+
 ## Setup
 
 To setup only the necessary dependencies, run the following:
