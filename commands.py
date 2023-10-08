@@ -1,10 +1,10 @@
 import fire
 
-from mlopscourse.infer import infer
-from mlopscourse.train import train
+from mlopscourse.infer import Inferencer
+from mlopscourse.train import Trainer
 
 
-def outer_train(model_type: str) -> None:
+def train(model_type: str) -> None:
     """
     Trains the chosen model on the train split of the dataset and saves the checkpoint.
 
@@ -14,10 +14,10 @@ def outer_train(model_type: str) -> None:
         The type of model for training. Should be "rf" for RandomForest and "cb"
         for CatBoost.
     """
-    train(model_type)
+    Trainer(model_type).train()
 
 
-def outer_infer(model_type: str, ckpt: str) -> None:
+def infer(model_type: str, ckpt: str) -> None:
     """
     Runs the chosen model on the test set of the dataset and calculates the R^2 metric.
 
@@ -30,7 +30,7 @@ def outer_infer(model_type: str, ckpt: str) -> None:
         The filename inside 'checkpoint/' to load the model from. Should also contain the
         the filename extension.
     """
-    infer(model_type, ckpt)
+    Inferencer(model_type, ckpt).infer()
 
 
 if __name__ == "__main__":

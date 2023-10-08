@@ -50,7 +50,8 @@ If you want to train the chosen model and save it afterwards, run:
 poetry run python3 commands.py train --model_type [chosen_model]
 ```
 
-The available models are Random Forest (from the scikit-learn library) and CatBoost.
+The available models are `rf` (Random Forest from the scikit-learn library) and `cb`
+(CatBoost).
 
 ### Evaluation
 

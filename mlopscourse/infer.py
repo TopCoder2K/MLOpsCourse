@@ -6,11 +6,11 @@ import fire
 from .data.prepare_dataset import prepare_dataset
 
 
-def infer(model_type: str, ckpt: str) -> None:
+class Inferencer:
     """
     Runs the chosen model on the test set of the dataset and calculates the R^2 metric.
 
-    Parameters
+    Attributes
     ----------
     model_type : str
         The type of model that was used for training. Should be "rf" for RandomForest
@@ -19,24 +19,30 @@ def infer(model_type: str, ckpt: str) -> None:
         The filename inside 'checkpoint/' to load the model from. Should also contain the
         the filename extension.
     """
-    (
-        _,
-        _,
-        X_test,
-        y_test,
-        _,
-        _,
-    ) = prepare_dataset(print_info=False)
 
-    with open(f"checkpoints/{ckpt}", "rb") as f:
-        model = pickle.load(f)
-    print(f"Evaluating the {model_type} model...")
-    y_preds = model.eval(X_test, y_test)
+    def __init__(self, model_type: str, ckpt: str) -> None:
+        self.model_type = model_type
+        self.ckpt = ckpt
 
-    os.makedirs("predictions", exist_ok=True)
-    preds_name = ckpt.split(".")[0]
-    y_preds.to_csv(f"predictions/{preds_name}_preds.csv")
+    def infer(self) -> None:
+        (
+            _,
+            _,
+            X_test,
+            y_test,
+            _,
+            _,
+        ) = prepare_dataset(print_info=False)
+
+        with open(f"checkpoints/{self.ckpt}", "rb") as f:
+            model = pickle.load(f)
+        print(f"Evaluating the {self.model_type} model...")
+        y_preds = model.eval(X_test, y_test)
+
+        os.makedirs("predictions", exist_ok=True)
+        preds_name = self.ckpt.split(".")[0]
+        y_preds.to_csv(f"predictions/{preds_name}_preds.csv")
 
 
 if __name__ == "__main__":
-    fire.Fire(infer)
+    fire.Fire(Inferencer)
