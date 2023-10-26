@@ -3,7 +3,7 @@ import pickle
 
 import fire
 
-from .data.prepare_dataset import prepare_dataset
+from .data.prepare_dataset import load_dataset
 
 
 class Inferencer:
@@ -26,13 +26,11 @@ class Inferencer:
 
     def infer(self) -> None:
         (
-            _,
-            _,
             X_test,
             y_test,
             _,
             _,
-        ) = prepare_dataset(print_info=False)
+        ) = load_dataset(split="test")
 
         with open(f"checkpoints/{self.ckpt}", "rb") as f:
             model = pickle.load(f)

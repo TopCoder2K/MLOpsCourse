@@ -6,7 +6,7 @@ The "Bike Rentals" dataset is used for scripts in this repository. This dataset 
 daily counts of rented bicycles from the bicycle rental company
 [Capital-Bikeshare](https://capitalbikeshare.com/) in Washington D.C., along with weather
 and seasonal information. The goal is to predict how many bikes will be rented depending
-on the weather and the day. The dataset info is
+on the weather and the day. The train split info is
 
 ```
 Index: 8645 entries, 0 to 8644
@@ -28,6 +28,12 @@ Data columns (total 11 columns):
 
 ## Setup
 
+First of all, clone the repository
+
+```
+git clone https://github.com/TopCoder2K/mlops-course.git
+```
+
 To setup only the necessary dependencies, run the following:
 
 ```
@@ -40,6 +46,17 @@ If you want to use `pre-commit`, install all the dependencies:
 poetry install
 ```
 
+## Fetching the data
+
+To fetch the preprocessed train and test splits of the dataset, run:
+
+```
+poetry run dvc pull
+```
+
+The command should download two .csv files from my GDrive and place them inside the
+`mlopscourse/data/` directory.
+
 ## Running experiments
 
 ### Training
@@ -50,8 +67,8 @@ If you want to train the chosen model and save it afterwards, run:
 poetry run python3 commands.py train --model_type [chosen_model]
 ```
 
-The available models are `rf` (Random Forest from the scikit-learn library) and `cb`
-(CatBoost).
+The available models are `rf` (Random Forest from the `scikit-learn` library) and `cb`
+(Yandex's CatBoost).
 
 ### Evaluation
 

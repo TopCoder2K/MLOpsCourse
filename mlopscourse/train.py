@@ -2,7 +2,7 @@ import os
 
 import fire
 
-from .data.prepare_dataset import prepare_dataset
+from .data.prepare_dataset import load_dataset
 from .models.models_zoo import prepare_model
 
 
@@ -24,11 +24,9 @@ class Trainer:
         (
             X_train,
             y_train,
-            _,
-            _,
             numerical_features,
             categorical_features,
-        ) = prepare_dataset(print_info=True)
+        ) = load_dataset(split="train")
         model = prepare_model(self.model_type, numerical_features, categorical_features)
 
         print(f"Training the {self.model_type} model...")

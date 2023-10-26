@@ -26,6 +26,7 @@ class CatboostModel(BaseModel):
             "random_seed": 0,
             "task_type": "CPU",
             "n_estimators": 1000,
+            "metric_period": 100,
         }
         self.model = CatBoostRegressor(**self.hyperparams)
         self.numerical_features = numerical_features
@@ -52,9 +53,7 @@ class CatboostModel(BaseModel):
                 cat_features=self.categorical_features,
                 feature_names=list(X_test.columns),
             )
-            self.model.fit(
-                train_data, eval_set=test_data, metric_period=100, use_best_model=True
-            )
+            self.model.fit(train_data, eval_set=test_data, use_best_model=True)
         else:
             self.model.fit(train_data)
 
