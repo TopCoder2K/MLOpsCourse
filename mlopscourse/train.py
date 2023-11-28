@@ -1,6 +1,8 @@
 import os
 
 import fire
+from hydra import compose
+from omegaconf import DictConfig, OmegaConf
 
 from .data.prepare_dataset import load_dataset
 from .models.models_zoo import prepare_model
@@ -12,13 +14,16 @@ class Trainer:
 
     Attributes
     ----------
-    model_type : str
-        The type of model for training. Should be "rf" for RandomForest and "cb"
-        for CatBoost.
+    cfg : omegaconf.DictConfig
+        The configuration containing the model type and hyperparameters, training and
+        inference parameters.
     """
 
-    def __init__(self, model_type: str) -> None:
-        self.model_type = model_type
+    def __init__(self, config_name: str, **kwargs: dict) -> None:
+        self.cfg: DictConfig = compose(
+            config_name=config_name, overrides=[f"{k}={v}" for k, v in kwargs.items()]
+        )
+        print(OmegaConf.to_yaml(self.cfg))
 
     def train(self) -> None:
         (
@@ -27,9 +32,10 @@ class Trainer:
             numerical_features,
             categorical_features,
         ) = load_dataset(split="train")
-        model = prepare_model(self.model_type, numerical_features, categorical_features)
 
-        print(f"Training the {self.model_type} model...")
+        model = prepare_model(self.cfg, numerical_features, categorical_features)
+
+        print(f"Training the {self.cfg.model.name} model...")
         model.train(X_train, y_train)
 
         os.makedirs("checkpoints", exist_ok=True)

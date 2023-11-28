@@ -1,0 +1,11 @@
+model:
+  name: rf
+  hyperparams:
+    n_estimators: 500
+    random_state: 0
+
+training:
+  checkpoint_name: rf_model.p
+
+inference:
+  checkpoint_name: rf_model.p

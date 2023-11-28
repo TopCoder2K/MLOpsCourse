@@ -1,34 +1,26 @@
-import pickle
 from typing import List, Optional
 
 import numpy as np
 import pandas as pd
 from catboost import CatBoostRegressor, Pool
+from omegaconf import DictConfig
 from sklearn.metrics import r2_score
 
 from .base import BaseModel
 
 
 class CatboostModel(BaseModel):
-    """A basic Random Forest model from sklearn."""
+    """The Yandex's CatBoost."""
 
     def __init__(
-        self, numerical_features: List[str], categorical_features: List[str]
+        self,
+        cfg: DictConfig,
+        numerical_features: List[str],
+        categorical_features: List[str],
     ) -> None:
-        super().__init__()
+        super().__init__(cfg)
 
-        self.hyperparams = {
-            "learning_rate": 0.3,
-            "depth": 6,
-            "l2_leaf_reg": 3,
-            "loss_function": "RMSE",
-            "eval_metric": "R2",
-            "random_seed": 0,
-            "task_type": "CPU",
-            "n_estimators": 1000,
-            "metric_period": 100,
-        }
-        self.model = CatBoostRegressor(**self.hyperparams)
+        self.model = CatBoostRegressor(**cfg.model.hyperparams)
         self.numerical_features = numerical_features
         self.categorical_features = categorical_features
 
@@ -76,7 +68,3 @@ class CatboostModel(BaseModel):
             feature_names=list(X_sample.columns),
         )
         return self.model.predict(sample_data)
-
-    def save_checkpoint(self, path: str) -> None:
-        with open(path + "model_cb.p", "wb") as f:
-            pickle.dump(self, f)

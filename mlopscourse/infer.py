@@ -2,6 +2,8 @@ import os
 import pickle
 
 import fire
+from hydra import compose
+from omegaconf import DictConfig, OmegaConf
 
 from .data.prepare_dataset import load_dataset
 
@@ -12,17 +14,16 @@ class Inferencer:
 
     Attributes
     ----------
-    model_type : str
-        The type of model that was used for training. Should be "rf" for RandomForest
-        and "cb" for CatBoost.
-    ckpt : str
-        The filename inside 'checkpoint/' to load the model from. Should also contain the
-        the filename extension.
+    cfg : omegaconf.DictConfig
+        The configuration containing the model type and hyperparameters, training and
+        inference parameters.
     """
 
-    def __init__(self, model_type: str, ckpt: str) -> None:
-        self.model_type = model_type
-        self.ckpt = ckpt
+    def __init__(self, config_name: str, **kwargs: dict) -> None:
+        self.cfg: DictConfig = compose(
+            config_name=config_name, overrides=[f"{k}={v}" for k, v in kwargs.items()]
+        )
+        print(OmegaConf.to_yaml(self.cfg))
 
     def infer(self) -> None:
         (
@@ -32,14 +33,14 @@ class Inferencer:
             _,
         ) = load_dataset(split="test")
 
-        with open(f"checkpoints/{self.ckpt}", "rb") as f:
+        with open(f"checkpoints/{self.cfg.inference.checkpoint_name}", "rb") as f:
             model = pickle.load(f)
-        print(f"Evaluating the {self.model_type} model...")
+        print(f"Evaluating the {self.cfg.model.name} model...")
         y_preds = model.eval(X_test, y_test)
 
         os.makedirs("predictions", exist_ok=True)
-        preds_name = self.ckpt.split(".")[0]
-        y_preds.to_csv(f"predictions/{preds_name}_preds.csv")
+        ckpt_name = self.cfg.inference.checkpoint_name.split(".")[0]
+        y_preds.to_csv(f"predictions/{ckpt_name}_preds.csv")
 
 
 if __name__ == "__main__":

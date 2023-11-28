@@ -1,36 +1,58 @@
 import fire
+from hydra import initialize
 
 from mlopscourse.infer import Inferencer
 from mlopscourse.train import Trainer
 
 
-def train(model_type: str) -> None:
+def train(
+    config_name: str,
+    config_path: str = "mlopscourse/configs/",
+    hydra_version_base: str = "1.3",
+    **kwargs: dict,
+) -> None:
     """
     Trains the chosen model on the train split of the dataset and saves the checkpoint.
 
     Parameters
     ----------
-    model_type : str
-        The type of model for training. Should be "rf" for RandomForest and "cb"
-        for CatBoost.
+    config_name : str
+        The name of the configuration file to use for model, training and inference
+        hyperparameters.
+    config_path : str
+        The path to the configuration files.
+    hydra_version_base : str
+        The compatibility level of hydra to use.
+    **kwargs : dict, optional
+        Values of the configuration file to override.
     """
-    Trainer(model_type).train()
+    with initialize(config_path=config_path, version_base=hydra_version_base):
+        Trainer(config_name, **kwargs).train()
 
 
-def infer(model_type: str, ckpt: str) -> None:
+def infer(
+    config_name: str,
+    config_path: str = "mlopscourse/configs/",
+    hydra_version_base: str = "1.3",
+    **kwargs: dict,
+) -> None:
     """
     Runs the chosen model on the test set of the dataset and calculates the R^2 metric.
 
     Parameters
     ----------
-    model_type : str
-        The type of model that was used for training. Should be "rf" for RandomForest
-        and "cb" for CatBoost.
-    ckpt : str
-        The filename inside 'checkpoint/' to load the model from. Should also contain the
-        the filename extension.
+    config_name : str
+        The name of the configuration file to use for model, training and inference
+        hyperparameters.
+    config_path : str
+        The path to the configuration files.
+    hydra_version_base : str
+        The compatibility level of hydra to use.
+    **kwargs : dict, optional
+        Values of the configuration file to override.
     """
-    Inferencer(model_type, ckpt).infer()
+    with initialize(config_path=config_path, version_base=hydra_version_base):
+        Inferencer(config_name, **kwargs).infer()
 
 
 if __name__ == "__main__":

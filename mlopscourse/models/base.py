@@ -1,15 +1,20 @@
+import pickle
+from abc import ABCMeta, abstractmethod
 from typing import Optional
 
 import pandas as pd
+from omegaconf import DictConfig
 
 
-class BaseModel:
+class BaseModel(metaclass=ABCMeta):
     """Represents an interface that any model used must implement."""
 
-    def __init__(self) -> None:
+    def __init__(self, cfg: DictConfig) -> None:
+        self.cfg = cfg
         self.preprocessor = None
         self.model = None
 
+    @abstractmethod
     def train(
         self,
         X_train: pd.DataFrame,
@@ -19,11 +24,14 @@ class BaseModel:
     ) -> None:
         raise NotImplementedError()
 
+    @abstractmethod
     def eval(self, X_test: pd.DataFrame, y_test: pd.Series) -> pd.Series:
         raise NotImplementedError()
 
+    @abstractmethod
     def __call__(self, X_sample: pd.DataFrame) -> pd.Series:
         raise NotImplementedError()
 
     def save_checkpoint(self, path: str) -> None:
-        raise NotImplementedError()
+        with open(path + self.cfg.training.checkpoint_name, "wb") as f:
+            pickle.dump(self, f)

@@ -1,5 +1,8 @@
 # MLOpsCourse
 
+This repository is dedicated to the easy-to-understand practice of the standard MLOps
+techniques.
+
 ## Task Description
 
 The "Bike Rentals" dataset is used for scripts in this repository. This dataset contains
@@ -40,7 +43,7 @@ To setup only the necessary dependencies, run the following:
 poetry install --without dev
 ```
 
-If you want to use `pre-commit`, install all the dependencies:
+If you want to use `pre-commit` and `dvc`, install all the dependencies:
 
 ```
 poetry install
@@ -61,20 +64,25 @@ The command should download two .csv files from my GDrive and place them inside 
 
 ### Training
 
-If you want to train the chosen model and save it afterwards, run:
+If you want to train the chosen model and save it afterwards, place its configuration file
+in the `mlopscourse/configs` directory and run:
 
 ```
-poetry run python3 commands.py train --model_type [chosen_model]
+poetry run python3 commands.py train --config_name [config_name_without_extension]
 ```
 
 The available models are `rf` (Random Forest from the `scikit-learn` library) and `cb`
-(Yandex's CatBoost).
+(Yandex's CatBoost), so an example with the CatBoost would be the following:
+
+```
+poetry run python3 commands.py train --config_name cb_config
+```
 
 ### Evaluation
 
 If you want to infer a previously trained model, make sure you've placed the checkpoint in
-`checkpoints/` and then run
+`checkpoints/` and the configuration file in `mlopscourse/configs` then run
 
 ```
-poetry run python3 commands.py infer --model_type [chosen_model] --ckpt [checkpoint_filename_with_extension]
+poetry run python3 commands.py infer --config_name [config_name_without_extension]
 ```

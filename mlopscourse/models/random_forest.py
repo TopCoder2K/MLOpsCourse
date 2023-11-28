@@ -1,8 +1,8 @@
-import pickle
 from typing import List, Optional
 
 import numpy as np
 import pandas as pd
+from omegaconf import DictConfig
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import make_pipeline
@@ -15,9 +15,12 @@ class RandomForest(BaseModel):
     """A basic Random Forest model from sklearn."""
 
     def __init__(
-        self, numerical_features: List[str], categorical_features: List[str]
+        self,
+        cfg: DictConfig,
+        numerical_features: List[str],
+        categorical_features: List[str],
     ) -> None:
-        super().__init__()
+        super().__init__(cfg)
 
         self.preprocessor = ColumnTransformer(
             transformers=[
@@ -28,7 +31,7 @@ class RandomForest(BaseModel):
             verbose_feature_names_out=False,
         ).set_output(transform="pandas")
         self.model = make_pipeline(
-            self.preprocessor, RandomForestRegressor(random_state=0)
+            self.preprocessor, RandomForestRegressor(**cfg.model.hyperparams)
         )
 
     def train(
@@ -49,7 +52,3 @@ class RandomForest(BaseModel):
 
     def __call__(self, X_sample: pd.DataFrame) -> np.ndarray:
         return self.model.predict(X_sample)
-
-    def save_checkpoint(self, path: str) -> None:
-        with open(path + "model_rf.p", "wb") as f:
-            pickle.dump(self, f)
