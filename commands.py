@@ -7,7 +7,7 @@ from mlopscourse.train import Trainer
 
 def train(
     config_name: str,
-    config_path: str = "mlopscourse/configs/",
+    config_path: str = "configs/",
     hydra_version_base: str = "1.3",
     **kwargs: dict,
 ) -> None:
@@ -32,7 +32,7 @@ def train(
 
 def infer(
     config_name: str,
-    config_path: str = "mlopscourse/configs/",
+    config_path: str = "configs/",
     hydra_version_base: str = "1.3",
     **kwargs: dict,
 ) -> None:

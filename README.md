@@ -57,15 +57,16 @@ To fetch the preprocessed train and test splits of the dataset, run:
 poetry run dvc pull
 ```
 
-The command should download two .csv files from my GDrive and place them inside the
-`mlopscourse/data/` directory.
+The command should download two .csv files from my
+[GDrive](https://drive.google.com/drive/folders/1fCTKCtocuLIhDQ5OaL8lQKtI8fPcBVFZ?usp=sharing)
+and place them inside the `mlopscourse/data/` directory.
 
 ## Running experiments
 
 ### Training
 
 If you want to train the chosen model and save it afterwards, place its configuration file
-in the `mlopscourse/configs` directory and run:
+in the `configs` directory and run:
 
 ```
 poetry run python3 commands.py train --config_name [config_name_without_extension]
@@ -81,7 +82,7 @@ poetry run python3 commands.py train --config_name cb_config
 ### Evaluation
 
 If you want to infer a previously trained model, make sure you've placed the checkpoint in
-`checkpoints/` and the configuration file in `mlopscourse/configs` then run
+`checkpoints/` and the configuration file in `configs/` then run
 
 ```
 poetry run python3 commands.py infer --config_name [config_name_without_extension]
