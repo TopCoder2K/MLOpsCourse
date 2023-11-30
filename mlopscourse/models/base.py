@@ -35,3 +35,7 @@ class BaseModel(metaclass=ABCMeta):
     def save_checkpoint(self, path: str) -> None:
         with open(path + self.cfg.training.checkpoint_name, "wb") as f:
             pickle.dump(self, f)
+
+    @abstractmethod
+    def log_fis_and_metrics(self, exp_id: str) -> None:
+        raise NotImplementedError()

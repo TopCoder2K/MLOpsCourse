@@ -79,6 +79,9 @@ The available models are `rf` (Random Forest from the `scikit-learn` library) an
 poetry run python3 commands.py train --config_name cb_config
 ```
 
+_N.B. Do not forget to set `logging.mlflow.tracking_uri` before the launch. The logs are
+saved in the default directory: `mlruns`._
+
 ### Evaluation
 
 If you want to infer a previously trained model, make sure you've placed the checkpoint in
