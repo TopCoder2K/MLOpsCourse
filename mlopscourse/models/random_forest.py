@@ -59,33 +59,30 @@ class RandomForest(BaseModel):
     def log_fis_and_metrics(
         self, exp_id: str, X_train: pd.DataFrame, y_train: pd.Series
     ) -> None:
-        with mlflow.start_run(
-            experiment_id=exp_id, run_name=f"training-{self.cfg.model.name}"
-        ):
-            # Log the model's hyperparameters and the code version
-            mlflow.log_params(self.cfg.model.hyperparams)
-            mlflow.log_param("commit_id", self.cfg.logging.commit_id)
-            # Log feature importances
+        # Log the model's hyperparameters and the code version
+        mlflow.log_params(self.cfg.model.hyperparams)
+        mlflow.log_param("commit_id", self.cfg.logging.commit_id)
+        # Log feature importances
+        mlflow.log_metrics(
+            {
+                f"fi_of_{col_name}": self.model.named_steps[
+                    "randomforestregressor"
+                ].feature_importances_[i]
+                for i, col_name in enumerate(X_train.columns)
+            }
+        )
+        # Log R2 and RMSE metrics
+        for i in tqdm(range(0, self.cfg.model.hyperparams.n_estimators)):
+            model_i = make_pipeline(
+                self.preprocessor, RandomForestRegressor(**self.cfg.model.hyperparams)
+            )
+            model_i.named_steps["randomforestregressor"].n_estimators = i + 1
+            model_i.fit(X_train, y_train)
+            y_pred = model_i.predict(X_train)
             mlflow.log_metrics(
                 {
-                    f"fi_of_{col_name}": self.model.named_steps[
-                        "randomforestregressor"
-                    ].feature_importances_[i]
-                    for i, col_name in enumerate(X_train.columns)
-                }
+                    "R2_metric": r2_score(y_train, y_pred),
+                    "RMSE_metric": mean_squared_error(y_train, y_pred, squared=False),
+                },
+                step=i,
             )
-            # Log R2 and RMSE metrics
-            for i in tqdm(range(0, self.cfg.model.hyperparams.n_estimators)):
-                model_i = make_pipeline(
-                    self.preprocessor, RandomForestRegressor(**self.cfg.model.hyperparams)
-                )
-                model_i.named_steps["randomforestregressor"].n_estimators = i + 1
-                model_i.fit(X_train, y_train)
-                y_pred = model_i.predict(X_train)
-                mlflow.log_metrics(
-                    {
-                        "R2_metric": r2_score(y_train, y_pred),
-                        "RMSE_metric": mean_squared_error(y_train, y_pred, squared=False),
-                    },
-                    step=i,
-                )

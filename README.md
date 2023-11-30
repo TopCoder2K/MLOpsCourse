@@ -80,7 +80,8 @@ poetry run python3 commands.py train --config_name cb_config
 ```
 
 _N.B. Do not forget to set `logging.mlflow.tracking_uri` before the launch. The logs are
-saved in the default directory: `mlruns`._
+saved in the default directory: `mlruns`. If you are using the standard MLFlow server,
+then run it before the training with `poetry run mlflow ui`._
 
 ### Evaluation
 
@@ -89,4 +90,33 @@ If you want to infer a previously trained model, make sure you've placed the che
 
 ```
 poetry run python3 commands.py infer --config_name [config_name_without_extension]
+```
+
+### Deployment
+
+In order to deploy a trained model, run:
+
+```
+poetry run mlflow models serve -p 5001 -m checkpoints/mlflow_[model_type]_ckpt/ --env-manager=local
+```
+
+where `[model_type]` is `cb` or `rf`.
+
+After this, it is possible to send requests to the model. I've created a script for the
+correct json generation with the first example from the training set:
+
+```
+poetry run python3 create_example_request.py create_example_request
+```
+
+Send a request to the deployed model using the generated json:
+
+```
+curl http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d @example_request.json
+```
+
+The model should reply with something like this:
+
+```
+{"predictions": [20.8]}
 ```

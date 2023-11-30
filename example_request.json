@@ -1,0 +1,19 @@
+{
+  "dataframe_split": {
+    "index": [0],
+    "columns": [
+      "season",
+      "month",
+      "hour",
+      "holiday",
+      "weekday",
+      "workingday",
+      "weather",
+      "temp",
+      "feel_temp",
+      "humidity",
+      "windspeed"
+    ],
+    "data": [["spring", 1, 0, false, 6, false, "clear", 9.84, 14.395, 0.81, 0.0]]
+  }
+}

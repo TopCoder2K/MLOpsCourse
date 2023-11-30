@@ -50,12 +50,26 @@ class Trainer:
         mlflow_cfg = self.cfg.logging.mlflow
         mlflow.set_tracking_uri(mlflow_cfg.tracking_uri)
         exp_id = mlflow.set_experiment(mlflow_cfg.exp_name).experiment_id
-        # Unfortunately, logging is model dependent, at least because
-        # RandomForestRegressor doesn't provide the target metric progress.
-        if self.cfg.model.name == "cb":
-            model.log_fis_and_metrics(exp_id, X_train.columns)
-        else:
-            model.log_fis_and_metrics(exp_id, X_train, y_train)
+        with mlflow.start_run(
+            experiment_id=exp_id, run_name=f"training-{self.cfg.model.name}"
+        ):
+            signature = mlflow.models.infer_signature(X_train, y_train)
+            # Unfortunately, logging is model dependent, at least because
+            # RandomForestRegressor doesn't provide the target metric progress.
+            if self.cfg.model.name == "cb":
+                mlflow.catboost.save_model(
+                    model.model,
+                    f"checkpoints/mlflow_{self.cfg.model.name}_ckpt/",
+                    signature=signature,
+                )
+                model.log_fis_and_metrics(exp_id, X_train.columns)
+            else:
+                mlflow.sklearn.save_model(
+                    model.model,
+                    f"checkpoints/mlflow_{self.cfg.model.name}_ckpt/",
+                    signature=signature,
+                )
+                model.log_fis_and_metrics(exp_id, X_train, y_train)
 
 
 if __name__ == "__main__":
