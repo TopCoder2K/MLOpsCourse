@@ -13,7 +13,11 @@ def prepare_dataset(print_info: bool = True) -> None:
     # Because of this rare category, we collapse it into "rain".
     X["weather"].replace(to_replace="heavy_rain", value="rain", inplace=True)
 
-    # We can see that we have data from two years. We use the first year
+    # Since ONNX LabelEncoder doesn't support booleans, boolean columns must be
+    # converted to integer columns
+    X.replace({"False": 0, "True": 1}, inplace=True)
+
+    # The dataset contains data from two years. We use the first year
     # to train the model and the second year to test the model.
     mask_training = X["year"] == 0
     X = X.drop(columns=["year"])
