@@ -92,7 +92,14 @@ If you want to infer a previously trained model, make sure you've placed the che
 poetry run python3 commands.py infer --config_name [config_name_without_extension]
 ```
 
-### Deployment
+### Deployment with MLflow
+
+**Warning! This feature works stably only with the CatBoost model.** Predictions of the
+onnx version of the Random Forest differ from the original one (see
+[this](https://github.com/onnx/sklearn-onnx/issues/1047#issuecomment-1851837537)).
+Moreover, I was not able to infer the onnx version with MLflow (although everything worked
+fine with the `mlflow.sklearn` flavour as you can see in the `hw2` version of the
+repository).
 
 In order to deploy a trained model, run:
 
@@ -102,8 +109,10 @@ poetry run mlflow models serve -p 5001 -m checkpoints/mlflow_[model_type]_ckpt/ 
 
 where `[model_type]` is `cb` or `rf`.
 
-After this, it is possible to send requests to the model. I've created a script for the
-correct json generation with the first example from the training set:
+After this, it is possible to send requests to the model. I've created a script to
+generate the correct json containing the first example from the training set, but the json
+itself is in the repository, so you can skip this step. If you want to generate the json
+by yourself, run:
 
 ```
 poetry run python3 create_example_request.py create_example_request

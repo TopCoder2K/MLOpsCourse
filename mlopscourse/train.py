@@ -65,10 +65,10 @@ class Trainer:
                 )
                 model.log_fis_and_metrics(exp_id, X_train.columns)
             else:
-                model_onnx = to_onnx(model.model, X=X_train.iloc[:1], verbose=1)
+                model_onnx = to_onnx(model.model, X=X_train[:1], verbose=1)
                 mlflow.onnx.save_model(
                     model_onnx,
-                    f"checkpoints/mlflow_{self.cfg.model.name}_onnx_ckpt/",
+                    f"checkpoints/mlflow_{self.cfg.model.name}_ckpt/",
                     signature=signature,
                 )
                 model.log_fis_and_metrics(exp_id, X_train, y_train)
