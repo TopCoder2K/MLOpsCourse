@@ -1,0 +1,78 @@
+name: "catboost"
+backend: "python"
+max_batch_size: 1024
+
+input [
+    {
+        name: "season"
+        data_type: TYPE_STRING
+        dims: [ 1 ]
+    },
+    {
+        name: "weather"
+        data_type: TYPE_STRING
+        dims: [ 1 ]
+    },
+    {
+        name: "month"
+        data_type: TYPE_INT32
+        dims: [ 1 ]
+    },
+    {
+        name: "hour"
+        data_type: TYPE_INT32
+        dims: [ 1 ]
+    },
+    {
+        name: "holiday"
+        data_type: TYPE_INT32
+        dims: [ 1 ]
+    },
+    {
+        name: "weekday"
+        data_type: TYPE_INT32
+        dims: [ 1 ]
+    },
+    {
+        name: "workingday"
+        data_type: TYPE_INT32
+        dims: [ 1 ]
+    },
+    {
+        name: "temp"
+        data_type: TYPE_FP32
+        dims: [ 1 ]
+    },
+    {
+        name: "feel_temp"
+        data_type: TYPE_FP32
+        dims: [ 1 ]
+    },
+    {
+        name: "humidity"
+        data_type: TYPE_FP32
+        dims: [ 1 ]
+    },
+    {
+        name: "windspeed"
+        data_type: TYPE_FP32
+        dims: [ 1 ]
+    }
+]
+
+output [
+    {
+        name: "prediction"
+        data_type: TYPE_FP32
+        dims: [ 1 ]
+    }
+]
+
+instance_group [
+    {
+        count: 1
+        kind: KIND_CPU
+    }
+]
+
+dynamic_batching: { max_queue_delay_microseconds: 500 }

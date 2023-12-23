@@ -1,0 +1,5 @@
+outs:
+- md5: 02c2243ee7ebf7a4c7f03203a2a76102
+  size: 2903484
+  hash: md5
+  path: catboost.p

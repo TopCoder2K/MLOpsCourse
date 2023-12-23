@@ -61,7 +61,7 @@ The command should download two .csv files from my
 [GDrive](https://drive.google.com/drive/folders/1fCTKCtocuLIhDQ5OaL8lQKtI8fPcBVFZ?usp=sharing)
 and place them inside the `mlopscourse/data/` directory.
 
-## Running experiments
+## Running Training and Evaluation
 
 ### Training
 
@@ -92,7 +92,7 @@ If you want to infer a previously trained model, make sure you've placed the che
 poetry run python3 commands.py infer --config_name [config_name_without_extension]
 ```
 
-### Deployment with MLflow
+## Deployment with MLflow
 
 **Warning! This feature works stably only with the CatBoost model.** Predictions of the
 onnx version of the Random Forest differ from the original one (see
@@ -127,5 +127,73 @@ curl http://127.0.0.1:5001/invocations -H 'Content-Type: application/json' -d @e
 The model should reply with something like this:
 
 ```
-{"predictions": [20.8]}
+{"predictions": [31.22848957148021]}
 ```
+
+## Deployment with Triton
+
+Since there are problems with the onnx version of the Random Forest model, this part is
+done only for the CatBoost model.
+
+### System configuration
+
+```
+OS:   Ubuntu 20.04.6 LTS
+CPU:  12th Gen Intel(R) Core(TM) i7-12700H
+vCPU: 10
+RAM:  15.29GiB
+```
+
+### Run deployment and test it
+
+Run the following to deploy the model:
+
+```
+docker build -t triton_with_catboost:latest mlopscourse/triton/
+docker run -it --rm --cpus 12 -v ./mlopscourse/triton/model_repository:/models -v ./mlopscourse/triton/assets:/assets -p 8000:8000 -p 8001:8001 -p 8002:8002 triton_with_catboost:latest
+(You are inside the container from now)
+cd mlops-course
+tritonserver --model-repository /models
+```
+
+Test the model:
+
+```
+poetry run python3 mlopscourse/triton/client.py
+```
+
+The client will check the predicted output with a hardcoded value. The client should print
+
+```
+Predicted: 31.22848957148021
+The test is passed!
+```
+
+### Optimization
+
+Without any optimizations:
+
+```
+Inferences/Second vs. Client Average Batch Latency
+Concurrency: 1, throughput: 674.924 infer/sec, latency 1480 usec
+Concurrency: 2, throughput: 861.473 infer/sec, latency 2320 usec
+Concurrency: 3, throughput: 861.696 infer/sec, latency 3480 usec
+Concurrency: 4, throughput: 841.59 infer/sec, latency 4751 usec
+Concurrency: 5, throughput: 839.948 infer/sec, latency 5951 usec
+```
+
+With dynamic batching (`{ max_queue_delay_microseconds: 500 }`):
+
+```
+Inferences/Second vs. Client Average Batch Latency
+Concurrency: 1, throughput: 291.835 infer/sec, latency 3424 usec
+Concurrency: 2, throughput: 588.008 infer/sec, latency 3400 usec
+Concurrency: 3, throughput: 860.309 infer/sec, latency 3485 usec
+Concurrency: 4, throughput: 1118.63 infer/sec, latency 3574 usec
+Concurrency: 5, throughput: 1365.42 infer/sec, latency 3661 usec
+```
+
+and 2 times less CPU usage!
+
+With `{ max_queue_delay_microseconds: 2000 }` and `{ max_queue_delay_microseconds: 1000 }`
+I got worse results.
