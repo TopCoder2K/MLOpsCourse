@@ -259,7 +259,7 @@ and the approximate CPU usage by the container with the model for `concurrency =
 
 1. The queue consumpts a lot of time compared to the model.
 2. Increasing the models count from $1$ to $N$ for `concurrency == 5` results in
-   $\approx 150\% \cdot N$ CPU usage, $\approx 800 \cdot N$ throughput and dividing
+   $`\approx 150\% \cdot N`$ CPU usage, $`\approx 800 \cdot N`$ throughput and dividing
    queue's latency by some $k > 1$.
 
 #### Dynamic batching
